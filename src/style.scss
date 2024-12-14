@@ -1,6 +1,6 @@
 :root {
   line-height: 1;
-  font-family: monospace;
+  font-family: 'Trebuchet MS';
   font-size: 17px;
   font-weight: 400;
 
@@ -41,6 +41,8 @@ $scale: 7;
     cursor: grab;
   }
 
+  user-select: none;
+
   width: $p * 3 * $scale;
   height: $p * 2 * $scale;
   padding: $p;
@@ -61,8 +63,9 @@ $scale: 7;
   }
 
   &__num {
-    height: 24px;
-    line-height: 24px;
+    font-family: monospace;
+    height: 32px;
+    line-height: 32px;
     text-align: center;
   }
 
