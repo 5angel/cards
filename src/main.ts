@@ -15,8 +15,20 @@ function getPermutations(input: string): string[] {
 
   const isEven = (char: string): boolean => char.charCodeAt(0) % 2 === 0;
 
+  // Helper function to check if letters have indexes 2 apart
+  function isFarApart(word: string[]): boolean {
+    const indexes = word.map((char) => letters.indexOf(char));
+    const minIndex = Math.min(...indexes);
+    const maxIndex = Math.max(...indexes);
+    return maxIndex - minIndex > 3;
+  }
+
   // Helper function to check for 3 even or 3 odd letters
   function isValid(word: string[]): boolean {
+    if (isFarApart(word)) {
+      return false;
+    }
+
     const evens: number = word.filter(isEven).length;
     const odds: number = word.length - evens;
     return evens !== 3 && odds !== 3;
@@ -26,9 +38,9 @@ function getPermutations(input: string): string[] {
   for (let i = 0; i < len; i++) {
     for (let j = 0; j < len; j++) {
       for (let k = 0; k < len; k++) {
-        const wordArray: string[] = [letters[i], letters[j], letters[k]];
-        const word: string = wordArray.sort().join('');
-        if (isValid(wordArray)) {
+        const arr: string[] = [letters[i], letters[j], letters[k]];
+        const word: string = arr.sort().join('');
+        if (isValid(arr)) {
           result.add(word);
         }
       }
