@@ -54,7 +54,7 @@ $scale: 7;
     0 0 4px rgba(0, 0, 0, 0.2),
     0 1px 2px rgba(0, 0, 0, 0.2);
 
-  &__body {
+  &__wrap {
     position: relative;
     border: 2px solid black;
     width: 100%;
@@ -81,8 +81,8 @@ $scale: 7;
 
   &__shape.shape {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
+    bottom: 4px;
+    right: 4px;
   }
 }
 
@@ -94,18 +94,23 @@ $scale: 7;
   background-color: white;
   outline: 1px solid rgba(0, 0, 0, 0.3);
 
-  &_mod &__shell,
-  &_mod &__body {
-    border-color: #ff206e;
+  &_mod {
+    &._shell,
+    &._body {
+      &:after {
+        border-color: #ff206e;
+      }
+    }
   }
 
-  &_mod &__core {
-    background-color: #ff206e;
+  &_mod {
+    &._core {
+      background-color: #ff206e;
+    }
   }
 
-  &__shell,
-  &__body,
-  &__core {
+  &:after {
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -116,26 +121,26 @@ $scale: 7;
     border-width: 0;
   }
 
-  &__core {
+  &_core:after {
     z-index: 2;
     width: 8px;
     height: 8px;
     background-color: #454ade;
   }
 
-  &__body,
-  &__shell {
-    border-width: 4px;
+  &_body,
+  &_shell {
+    &:after {
+      border-width: 4px;
+    }
   }
 
-  &__body {
-    z-index: 1;
+  &_body:after {
     width: 16px;
     height: 16px;
   }
 
-  &__shell {
-    z-index: 0;
+  &_shell:after {
     width: 24px;
     height: 24px;
     outline: 1px solid white;

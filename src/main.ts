@@ -1,3 +1,4 @@
+import RCard from './rcard';
 import './style.scss';
 
 function main() {
@@ -75,3 +76,6 @@ console.log(
       return a.power > b.power ? 1 : -1;
     })
 );
+
+const card = new RCard('Judgement');
+card.mount();
