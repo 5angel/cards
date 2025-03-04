@@ -1,0 +1,49 @@
+$size: 128px;
+
+.controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: $size * 3;
+  height: $size * 3;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-areas:
+    '. a .'
+    'b b b'
+    '. c .';
+}
+
+.ctrl {
+  width: $size;
+  height: $size;
+  border: 0;
+  font-family: 'Trebuchet MS';
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: grey(192);
+  text-shadow:
+    0 0 1px black,
+    0 1px 1px black;
+
+  grid-row: 2;
+
+  &:first-child {
+    grid-area: a;
+  }
+
+  &:last-child {
+    grid-area: c;
+  }
+
+  &.type {
+    &_base {
+      background-color: transparent;
+    }
+
+    &_lock {
+      background-color: grey(96);
+    }
+  }
+}

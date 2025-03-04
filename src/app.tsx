@@ -1,9 +1,11 @@
+import Controls from './controls';
 import Room from './room';
 
 export default function App() {
   return (
     <div className="container">
-        <Room doors={1111} />
+      <Controls />
+      <Room doors={1111} />
     </div>
   );
 }
