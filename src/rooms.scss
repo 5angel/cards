@@ -36,9 +36,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 800px;
-  height: 600px;
+  width: 128px * 4;
+  height: 128px * 4;
   flex-wrap: wrap;
+  outline: 4px solid grey(64);
 }
 
 $size: 128px;
