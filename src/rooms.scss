@@ -14,6 +14,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  user-select: none;
 }
 
 * {
@@ -130,6 +132,15 @@ $border: 4px;
     $r: $c + ($w/2);
 
     &.pos {
+      &_1010,
+      &_0101 {
+        clip-path: polygon($l 0, $r 0, $r $e, $l $e);
+      }
+
+      &_0101 {
+        transform: rotate(90deg);
+      }
+
       &_1000,
       &_0100,
       &_0010,
