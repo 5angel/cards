@@ -21,7 +21,13 @@
     "noUncheckedSideEffectImports": true,
 
     /* React/JSX Support */
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+
+    /* Paths and Base URL */
+    "baseUrl": ".", // Base directory for resolving non-relative module names
+    "paths": {
+      "@/*": ["src/*"] // Map "@/" to the "src" directory
+    }
   },
   "include": ["src"]
 }

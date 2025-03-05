@@ -1,5 +1,5 @@
-import App from './app';
-import './style.scss';
+import App from './ui/app';
+import './styles/style.scss';
 
 function main() {
   requestAnimationFrame(main);

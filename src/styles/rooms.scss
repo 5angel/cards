@@ -33,6 +33,7 @@ body {
 }
 
 .container {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,6 +41,7 @@ body {
   height: 128px * 4;
   flex-wrap: wrap;
   outline: 4px solid grey(64);
+  overflow: hidden;
 }
 
 $size: 128px;
@@ -49,7 +51,9 @@ $border: 4px;
 .room {
   color: red;
   background-color: currentColor;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: $size;
   height: $size;
   background-image: conic-gradient(

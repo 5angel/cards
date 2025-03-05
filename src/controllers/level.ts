@@ -22,17 +22,8 @@ export type Room = {
   doors: Directions;
   locks: Directions;
   title?: string;
+  index?: number;
 };
-
-type ScanLine = [
-  Room | null,
-  Room | null,
-  Room | null,
-  Room | null,
-  Room | null,
-];
-
-type ScanView = [ScanLine, ScanLine, ScanLine, ScanLine, ScanLine];
 
 export function coords(x: number, y: number) {
   return x.toString(16) + ':' + y.toString(16);
@@ -51,7 +42,24 @@ export default class Level {
     }
   }
 
-  private map: Map<string, Room> = new Map();
+  private map: Map<string, Room> = new Map([
+    [
+      coords(0, 0),
+      {
+        doors: 1111,
+        locks: 0,
+        title: 'Crossroads',
+      },
+    ],
+    [
+      coords(-1, -1),
+      {
+        doors: 1111,
+        locks: 0,
+        title: 'Derp',
+      },
+    ],
+  ]);
 
   place(room: Room, x: number, y: number) {
     const id = coords(x, y);
@@ -70,16 +78,21 @@ export default class Level {
     return this.map.get(coords(x, y));
   }
 
-  view(cx: number, cy: number): ScanView {
+  view(cx: number, cy: number): (Room | null)[] {
     const sx = cx - 2;
     const sy = cy - 2;
 
-    return new Array(5).fill(null).map((_, i) => {
-      const y = sy + i;
-      return new Array(5).fill(null).map((_, j) => {
-        const x = sx + j;
-        return this.at(x, y) ?? null;
-      });
-    }) as ScanView;
+    return new Array(5)
+      .fill(null)
+      .map((_, i) => {
+        const y = sy + i;
+        return new Array(5).fill(null).map((_, j) => {
+          const x = sx + j;
+          return this.at(x, y) ?? null;
+        });
+      })
+      .reduce((acc, list) => {
+        return acc.concat(list);
+      }, []);
   }
 }
