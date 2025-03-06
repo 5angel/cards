@@ -1,15 +1,9 @@
-import Level from '@/controllers/level';
-import Player from '@/controllers/player';
-
 import Controls from './controls';
 import RoomUI from './room';
-
-const level = Level.getInstance();
-const player = Player.getInstance();
+import { useModelStore } from '@/controllers/model';
 
 export default function App() {
-  const [x, y] = player.where();
-  const view = level.view(x, y);
+  const { target, view } = useModelStore();
 
   return (
     <div className="container">
@@ -20,7 +14,7 @@ export default function App() {
 
         return null;
       })}
-      {/* <Controls /> */}
+      <Controls doors={target.doors} />
     </div>
   );
 }

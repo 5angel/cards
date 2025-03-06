@@ -1,22 +1,22 @@
 export type Directions =
-  | 0
-  | 1
-  | 10
-  | 100
-  | 1000
-  | 11
-  | 101
-  | 110
-  | 1100
-  | 1001
-  | 1010
-  | 111
-  | 1011
-  | 1101
-  | 1110
-  | 1111;
+  | 0b0000
+  | 0b0001
+  | 0b0010
+  | 0b0100
+  | 0b1000
+  | 0b0011
+  | 0b0101
+  | 0b0110
+  | 0b1100
+  | 0b1001
+  | 0b1010
+  | 0b0111
+  | 0b1011
+  | 0b1101
+  | 0b1110
+  | 0b1111;
 
-export type Arrow = 0 | 1 | 10 | 11;
+export type Arrow = 0b00 | 0b01 | 0b10 | 0b11;
 
 export type Room = {
   doors: Directions;
@@ -46,15 +46,15 @@ export default class Level {
     [
       coords(0, 0),
       {
-        doors: 1111,
+        doors: 0b0110,
         locks: 0,
         title: 'Crossroads',
       },
     ],
     [
-      coords(-1, -1),
+      coords(1, 0),
       {
-        doors: 1111,
+        doors: 0b1111,
         locks: 0,
         title: 'Derp',
       },
@@ -68,17 +68,19 @@ export default class Level {
 
   deal(): Room {
     return {
-      doors: 1111,
+      doors: 0b1111,
       locks: 0,
       title: '',
     };
   }
 
-  at(x: number, y: number) {
+  at(position: [number, number]) {
+    const [x, y] = position;
     return this.map.get(coords(x, y));
   }
 
-  view(cx: number, cy: number): (Room | null)[] {
+  view(position: [number, number]): (Room | null)[] {
+    const [cx, cy] = position;
     const sx = cx - 2;
     const sy = cy - 2;
 
@@ -88,7 +90,7 @@ export default class Level {
         const y = sy + i;
         return new Array(5).fill(null).map((_, j) => {
           const x = sx + j;
-          return this.at(x, y) ?? null;
+          return this.at([x, y]) ?? null;
         });
       })
       .reduce((acc, list) => {

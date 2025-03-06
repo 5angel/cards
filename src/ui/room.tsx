@@ -1,8 +1,7 @@
 import { Room } from '@/controllers/level';
 
 export default function RoomUI({ doors, title, index = 0 }: Room) {
-  const value = doors.toString(10).padStart(4, '0');
-
+  const value = doors.toString(2).padStart(4, '0');
   const x = index % 5;
   const y = Math.floor(index / 5);
   const tx = x * 128 - 64;

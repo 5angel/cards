@@ -10,8 +10,10 @@ $size: 128px;
   display: grid;
   grid-template-areas:
     '. a .'
-    'b b b'
+    'd e b'
     '. c .';
+  grid-template-rows: repeat(3, $size);
+  grid-template-columns: repeat(3, $size);
 }
 
 .ctrl {
@@ -27,19 +29,35 @@ $size: 128px;
     0 0 1px black,
     0 1px 1px black;
 
-  grid-row: 2;
+  opacity: 0;
 
-  &:first-child {
-    grid-area: a;
+  &:hover,
+  &:active {
+    opacity: 1;
   }
 
-  &:last-child {
-    grid-area: c;
+  &.pos {
+    &_00 {
+      grid-area: a;
+    }
+
+    &_01 {
+      grid-area: b;
+    }
+
+    &_10 {
+      grid-area: c;
+    }
+
+    &_11 {
+      grid-area: d;
+    }
   }
 
   &.type {
     &_base {
       background-color: transparent;
+      grid-area: e;
     }
 
     &_lock {
