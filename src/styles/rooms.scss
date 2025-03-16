@@ -1,6 +1,5 @@
-@function grey($value, $opacity: 1) {
-  @return rgba($value, $value, $value, $opacity);
-}
+@use 'sass:math';
+@use 'utils';
 
 :root {
   line-height: 1;
@@ -32,52 +31,106 @@ body {
   height: 100vh;
 }
 
+$w: 24px;
+$e: 100%;
+$c: math.div(128px, 2);
+$l: $c - math.div($w, 2);
+$r: $c + math.div($w, 2);
+
+$dl: $l + 4px;
+$dr: $r + 4px;
+
+$bg: transparent;
+$wall: utils.grey(96);
+$hole: black;
+
 .container {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 128px * 4;
-  height: 128px * 4;
+  width: 128px * 3.5;
+  height: 128px * 3.5;
   flex-wrap: wrap;
-  outline: 4px solid grey(64);
+  outline: 4px solid utils.grey(64);
   overflow: hidden;
 
-  .controls {
-    opacity: 0;
-  }
-
-  &:hover .controls {
-    opacity: 1;
-  }
+  background-image: repeating-linear-gradient(
+      0deg,
+      $bg 0,
+      $bg $dl,
+      $hole $dl,
+      $hole $dr,
+      $bg $dr,
+      $bg $e
+    ),
+    repeating-linear-gradient(
+      90deg,
+      $bg 0,
+      $bg $dl,
+      $hole $dl,
+      $hole $dr,
+      $bg $dr,
+      $bg $e
+    ),
+    repeating-linear-gradient(0deg, $wall 0, $wall 8px, $bg 8px, $bg 128px),
+    repeating-linear-gradient(90deg, $wall 0, $wall 8px, $bg 8px, $bg 128px);
+  background-size: 128px 128px;
+  background-position: 28px 36px;
 }
 
-$size: 128px;
 $depth: 24px;
-$border: 4px;
+$rsize: 128px;
+$rborder: 4px;
 
-.room {
-  color: red;
-  background-color: currentColor;
+$lsize: 152px;
+$lborder: 24px;
+
+.locks {
   position: absolute;
   top: 0;
   left: 0;
-  width: $size;
-  height: $size;
+  z-index: 2;
+
+  fill: white;
+  stroke-width: 2;
+  stroke-linecap: square;
+}
+
+.room {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  color: red;
+  background-color: currentColor;
+
+  width: $rsize;
+  height: $rsize;
   background-image: conic-gradient(
     from 45deg,
-    grey(0, 0.5) 0deg 90deg,
-    grey(0, 0.3) 90deg 180deg,
-    grey(0, 0.5) 180deg 270deg,
-    grey(0, 0.7) 270deg 360deg
+    utils.grey(0, 0.5) 0deg 90deg,
+    utils.grey(0, 0.3) 90deg 180deg,
+    utils.grey(0, 0.5) 180deg 270deg,
+    utils.grey(0, 0.7) 270deg 360deg
   );
+
+  &.blank {
+    background-image: none;
+    background-color: transparent;
+
+    &::before,
+    &::after {
+      content: unset;
+    }
+  }
 
   &__title {
     position: absolute;
     z-index: 3;
     top: 50%;
-    left: 0;
-    width: 100%;
+    left: 50%;
+    width: 72px;
     text-align: center;
     color: white;
     font-family: 'Trebuchet MS';
@@ -89,7 +142,8 @@ $border: 4px;
       0 0 1px black,
       0 1px 2px black,
       0 8px 3px rgba(0, 0, 0, 0.2);
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
+    word-wrap: break-word;
   }
 
   &::before,
@@ -107,126 +161,126 @@ $border: 4px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    $inner: $size - ($border * 2) - ($depth * 2);
+    $inner: $rsize - ($rborder * 2) - ($depth * 2);
     width: $inner;
     height: $inner;
     background-color: currentColor;
-    background-image: radial-gradient(circle, grey(0, 0.1), grey(0, 0.2));
-    outline: 2px solid grey(0, 0.1);
-    box-shadow:
-      0 0 $depth grey(0, 0.4),
-      inset 0 0 $depth grey(0, 0.2);
+    background-image: radial-gradient(
+      circle,
+      utils.grey(0, 0.1),
+      utils.grey(0, 0.2)
+    );
+    outline: 1px solid utils.grey(0, 0.1);
+    box-shadow: 0 0 2px utils.grey(0, 0.5);
   }
 
   &::after {
     width: 100%;
     height: 100%;
-    border: $border solid currentColor;
-    box-shadow: inset 0 0 2px grey(0, 1);
+    border: $rborder solid utils.grey(96);
+  }
+}
+
+.mask {
+  &_1010,
+  &_0101 {
+    clip-path: polygon($l 0, $r 0, $r $e, $l $e);
   }
 
-  .doors {
-    position: absolute;
-    z-index: 2;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(
-      circle at center,
-      currentColor 20%,
-      black 80%
+  &_0101 {
+    transform: rotate(90deg);
+  }
+
+  &_1000,
+  &_0100,
+  &_0010,
+  &_0001 {
+    clip-path: polygon($l 0, $l $c, $r $c, $r 0);
+  }
+
+  &_0100 {
+    transform: rotate(90deg);
+  }
+
+  &_0010 {
+    transform: rotate(180deg);
+  }
+
+  &_0001 {
+    transform: rotate(-90deg);
+  }
+
+  &_1100,
+  &_0110,
+  &_0011,
+  &_1001 {
+    clip-path: polygon($l 0, $r 0, $r $l, $e $l, $e $r, $l $r);
+  }
+
+  &_0110 {
+    transform: rotate(90deg);
+  }
+
+  &_0011 {
+    transform: rotate(180deg);
+  }
+
+  &_1001 {
+    transform: rotate(-90deg);
+  }
+
+  &_1101,
+  &_1110,
+  &_0111,
+  &_1011 {
+    clip-path: polygon($l 0, $r 0, $r $l, $e $l, $e $r, 0 $r, 0 $l, $l $l);
+  }
+
+  &_1110 {
+    transform: rotate(90deg);
+  }
+
+  &_0111 {
+    transform: rotate(180deg);
+  }
+
+  &_1011 {
+    transform: rotate(-90deg);
+  }
+
+  &_1111 {
+    clip-path: polygon(
+      $l 0,
+      $r 0,
+      $r $l,
+      $e $l,
+      $e $r,
+      $r $r,
+      $r $e,
+      $l $e,
+      $l $r,
+      0 $r,
+      0 $l,
+      $l $l
     );
-    border: 4px solid black;
-    will-change: transform;
-
-    $w: 24px;
-    $e: 100%;
-    $c: 128px / 2;
-    $l: $c - ($w/2);
-    $r: $c + ($w/2);
-
-    &.pos {
-      &_1010,
-      &_0101 {
-        clip-path: polygon($l 0, $r 0, $r $e, $l $e);
-      }
-
-      &_0101 {
-        transform: rotate(90deg);
-      }
-
-      &_1000,
-      &_0100,
-      &_0010,
-      &_0001 {
-        clip-path: polygon($l 0, $l $c, $r $c, $r 0);
-      }
-
-      &_0100 {
-        transform: rotate(90deg);
-      }
-
-      &_0010 {
-        transform: rotate(180deg);
-      }
-
-      &_0001 {
-        transform: rotate(-90deg);
-      }
-
-      &_1100,
-      &_0110,
-      &_0011,
-      &_1001 {
-        clip-path: polygon($l 0, $r 0, $r $l, $e $l, $e $r, $l $r);
-      }
-
-      &_0110 {
-        transform: rotate(90deg);
-      }
-
-      &_0011 {
-        transform: rotate(180deg);
-      }
-
-      &_1001 {
-        transform: rotate(-90deg);
-      }
-
-      &_1101,
-      &_1110,
-      &_0111,
-      &_1011 {
-        clip-path: polygon($l 0, $r 0, $r $l, $e $l, $e $r, 0 $r, 0 $l, $l $l);
-      }
-
-      &_1110 {
-        transform: rotate(90deg);
-      }
-
-      &_0111 {
-        transform: rotate(180deg);
-      }
-
-      &_1011 {
-        transform: rotate(-90deg);
-      }
-
-      &_1111 {
-        clip-path: polygon(
-          $l 0,
-          $r 0,
-          $r $l,
-          $e $l,
-          $e $r,
-          $r $r,
-          $r $e,
-          $l $e,
-          $l $r,
-          0 $r,
-          0 $l,
-          $l $l
-        );
-      }
-    }
   }
+}
+
+.doors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.doors {
+  z-index: 2;
+  background-image: radial-gradient(
+    circle at center,
+    currentColor 20%,
+    black 80%
+  );
+  border: 4px solid black;
 }

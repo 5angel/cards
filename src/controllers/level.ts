@@ -1,33 +1,7 @@
-export type Directions =
-  | 0b0000
-  | 0b0001
-  | 0b0010
-  | 0b0100
-  | 0b1000
-  | 0b0011
-  | 0b0101
-  | 0b0110
-  | 0b1100
-  | 0b1001
-  | 0b1010
-  | 0b0111
-  | 0b1011
-  | 0b1101
-  | 0b1110
-  | 0b1111;
+import { Compass, Cross, Room } from '@/types';
+import { align, arrowToVector, coords, flipDirection, split } from '@/utils';
 
-export type Arrow = 0b00 | 0b01 | 0b10 | 0b11;
-
-export type Room = {
-  doors: Directions;
-  locks: Directions;
-  title?: string;
-  index?: number;
-};
-
-export function coords(x: number, y: number) {
-  return x.toString(16) + ':' + y.toString(16);
-}
+const DOOR_VARIANTS: Cross[] = [0b1000, 0b1010, 0b1100, 0b1110, 0b1111];
 
 export default class Level {
   private static instance: Level = new Level();
@@ -46,37 +20,33 @@ export default class Level {
     [
       coords(0, 0),
       {
-        doors: 0b0110,
-        locks: 0,
-        title: 'Crossroads',
+        doors: 0b0100,
+        locks: 0b1111,
+        title: 'Cross\nroads',
       },
     ],
     [
       coords(1, 0),
       {
         doors: 0b1111,
-        locks: 0,
-        title: 'Derp',
+        locks: 0b1111,
+        title: 'Cross\nroads',
       },
     ],
   ]);
 
-  place(room: Room, x: number, y: number) {
-    const id = coords(x, y);
-    this.map.set(id, room);
-  }
-
-  deal(): Room {
-    return {
-      doors: 0b1111,
-      locks: 0,
-      title: '',
-    };
-  }
-
-  at(position: [number, number]) {
-    const [x, y] = position;
+  at([x, y]: [number, number]) {
     return this.map.get(coords(x, y));
+  }
+
+  check(position: [number, number]) {
+    const room = this.at(position);
+
+    if (room != null) {
+      return room.doors != null;
+    }
+
+    return false;
   }
 
   view(position: [number, number]): (Room | null)[] {

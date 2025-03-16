@@ -1,7 +1,15 @@
+@use './utils.scss';
+
 $size: 128px;
+
+svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
 
 .controls {
   position: absolute;
+  z-index: 4;
   top: 50%;
   left: 50%;
   width: $size * 3;
@@ -16,52 +24,99 @@ $size: 128px;
   grid-template-columns: repeat(3, $size);
 }
 
+$inner: 72px;
+
 .ctrl {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
   width: $size;
   height: $size;
   border: 0;
-  font-family: 'Trebuchet MS';
-  font-size: 20px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: grey(192);
-  text-shadow:
-    0 0 1px black,
-    0 1px 1px black;
 
-  opacity: 0;
+  &__title {
+    font-family: 'Trebuchet MS';
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: utils.grey(192);
+    text-shadow:
+      0 0 1px black,
+      0 1px 1px black;
+  }
 
-  &:hover,
-  &:active {
-    opacity: 1;
+  &:after {
+    content: '';
+    box-sizing: border-box;
+    @include utils.absquare($inner);
+    background-color: transparent;
+  }
+
+  &__icon {
+    position: relative;
+    z-index: 2;
   }
 
   &.pos {
-    &_00 {
+    &_1000 {
+      transform: rotate(-90deg);
+    }
+
+    &_0010 {
+      transform: rotate(90deg);
+    }
+
+    &_0001 {
+      transform: rotate(180deg);
+    }
+  }
+
+  &.pos {
+    &_1000 {
       grid-area: a;
     }
 
-    &_01 {
+    &_0100 {
       grid-area: b;
     }
 
-    &_10 {
+    &_0010 {
       grid-area: c;
     }
 
-    &_11 {
+    &_0001 {
       grid-area: d;
     }
   }
 
   &.type {
     &_base {
-      background-color: transparent;
       grid-area: e;
+      color: black;
+
+      &:after {
+        background-color: white;
+      }
+    }
+
+    &_step {
+      color: white;
+
+      opacity: 0;
+
+      &:hover,
+      &:active {
+        opacity: 1;
+      }
+
+      &:after {
+        background-color: black;
+      }
     }
 
     &_lock {
-      background-color: grey(96);
+      background-color: utils.grey(96);
     }
   }
 }

@@ -1,17 +1,5 @@
-import { Arrow } from './level';
-
-function arrowToVector(arrow: Arrow): [number, number] {
-  switch (arrow) {
-    case 0b00:
-      return [0, -1];
-    case 0b01:
-      return [1, 0];
-    case 0b10:
-      return [0, 1];
-    case 0b11:
-      return [-1, 0];
-  }
-}
+import { Compass } from '@/types';
+import { arrowToVector } from '@/utils';
 
 export default class Player {
   private static instance: Player = new Player();
@@ -28,7 +16,7 @@ export default class Player {
 
   private position: [number, number] = [0, 0];
 
-  step(arrow: Arrow) {
+  step(arrow: Compass) {
     const [x, y] = arrowToVector(arrow);
     return this.move(x, y);
   }
