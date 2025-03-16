@@ -21,15 +21,15 @@ export default class Level {
       coords(0, 0),
       {
         doors: 0b0100,
-        locks: 0b1111,
-        title: 'Cross\nroads',
+        locks: 0b00,
+        title: 'Entrance',
       },
     ],
     [
       coords(1, 0),
       {
         doors: 0b1111,
-        locks: 0b1111,
+        locks: 0b11,
         title: 'Cross\nroads',
       },
     ],
