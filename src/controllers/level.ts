@@ -1,7 +1,8 @@
-import { Compass, Cross, Room } from '@/types';
-import { align, arrowToVector, coords, flipDirection, split } from '@/utils';
+import Compass, { Ways } from '@/compass';
+import { Room } from '@/types';
+import { coords } from '@/utils';
 
-const DOOR_VARIANTS: Cross[] = [0b1000, 0b1010, 0b1100, 0b1110, 0b1111];
+const DOOR_VARIANTS: Ways[] = [0b1000, 0b1010, 0b1100, 0b1110, 0b1111];
 
 export default class Level {
   private static instance: Level = new Level();
@@ -21,16 +22,8 @@ export default class Level {
       coords(0, 0),
       {
         doors: 0b0100,
-        locks: 0b00,
+        locks: 0b01,
         title: 'Entrance',
-      },
-    ],
-    [
-      coords(1, 0),
-      {
-        doors: 0b1111,
-        locks: 0b11,
-        title: 'Cross\nroads',
       },
     ],
   ]);
@@ -48,6 +41,8 @@ export default class Level {
 
     return false;
   }
+
+  peek(where: Compass) {}
 
   view(position: [number, number]): (Room | null)[] {
     const [cx, cy] = position;

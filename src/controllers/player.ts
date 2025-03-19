@@ -1,5 +1,4 @@
-import { Compass } from '@/types';
-import { arrowToVector } from '@/utils';
+import Compass from '@/compass';
 
 export default class Player {
   private static instance: Player = new Player();
@@ -16,8 +15,8 @@ export default class Player {
 
   private position: [number, number] = [0, 0];
 
-  step(arrow: Compass) {
-    const [x, y] = arrowToVector(arrow);
+  step(where: Compass) {
+    const [x, y] = where.toVector();
     return this.move(x, y);
   }
 
