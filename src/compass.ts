@@ -23,6 +23,22 @@ export default class Compass {
 
   private value: Ways;
 
+  get top() {
+    return this.value === 0b1000;
+  }
+
+  get right() {
+    return this.value === 0b0100;
+  }
+
+  get bottom() {
+    return this.value === 0b0010;
+  }
+
+  get left() {
+    return this.value === 0b0001;
+  }
+
   flip() {
     const next = ((this.value & 0b0101) << 1) | ((this.value & 0b1010) >> 1);
     return new Compass(next as Ways);

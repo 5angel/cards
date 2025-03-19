@@ -1,4 +1,4 @@
-import Compass, { Ways } from '@/compass';
+import Compass from '@/compass';
 import { coords } from '@/utils';
 import Room from './room';
 
@@ -30,17 +30,11 @@ export default class Level {
     return this.map.get(coords(x, y));
   }
 
-  check(position: [number, number]) {
-    const room = this.at(position);
+  interact([px, py]: [number, number], where: Compass) {
+    const [dx, dy] = where.toVector();
 
-    if (room != null) {
-      return !room.blank;
-    }
-
-    return false;
+    const room = this.at([px + dx, py + dy]);
   }
-
-  peek(where: Compass) {}
 
   view(position: [number, number]): (Room | null)[] {
     const [cx, cy] = position;

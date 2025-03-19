@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import Player from './player';
 import Level from './level';
-import Compass from '@/compass';
+import Compass, { Ways } from '@/compass';
 import Room from './room';
 
 type Model = {
   view: (Room | null)[];
   target: Room;
   position: [number, number];
-  action: (arrow: Compass) => void;
+  action: (arrow: Ways) => void;
 };
 
 const level = Level.getInstance();
@@ -23,8 +23,10 @@ export const useModelStore = create<Model>((set) => {
     view,
     target,
     position,
-    action: (arrow: Compass) =>
+    action: (where: Ways) =>
       set((state) => {
+        level.interact(state.position, new Compass(where));
+
         return state;
       }),
   };
