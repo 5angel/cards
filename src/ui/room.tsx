@@ -1,4 +1,4 @@
-import { Room } from '@/types';
+import { RoomConfig } from '@/controllers/room';
 import classNames from 'classnames';
 
 const toBString = (value: number) => value.toString(2).padStart(4, '0');
@@ -26,7 +26,7 @@ function CellUI({ index, offset, className, children }: CellUIProps) {
   );
 }
 
-export default function RoomUI({ doors, title, index = 0 }: Room) {
+export default function RoomUI({ doors, title, index = 0 }: RoomConfig) {
   const rootClassName = classNames('room', {
     blank: doors == null,
   });

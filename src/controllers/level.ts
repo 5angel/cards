@@ -1,8 +1,6 @@
 import Compass, { Ways } from '@/compass';
-import { Room } from '@/types';
 import { coords } from '@/utils';
-
-const DOOR_VARIANTS: Ways[] = [0b1000, 0b1010, 0b1100, 0b1110, 0b1111];
+import Room from './room';
 
 export default class Level {
   private static instance: Level = new Level();
@@ -20,11 +18,11 @@ export default class Level {
   private map: Map<string, Room> = new Map([
     [
       coords(0, 0),
-      {
+      new Room({
         doors: 0b0100,
         locks: 0b01,
         title: 'Entrance',
-      },
+      }),
     ],
   ]);
 
@@ -36,7 +34,7 @@ export default class Level {
     const room = this.at(position);
 
     if (room != null) {
-      return room.doors != null;
+      return !room.blank;
     }
 
     return false;

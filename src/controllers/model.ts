@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import Player from './player';
-import { Compass, Room } from '@/types';
 import Level from './level';
+import Compass from '@/compass';
+import Room from './room';
 
 type Model = {
   view: (Room | null)[];

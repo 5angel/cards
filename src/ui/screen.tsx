@@ -11,7 +11,8 @@ export default function ScreenUI() {
       <LocksUI />
       {view.map((room, index) => {
         if (room != null) {
-          return <RoomUI {...room} index={index} />;
+          const config = room.valueOf();
+          return <RoomUI {...config} index={index} />;
         }
 
         return null;

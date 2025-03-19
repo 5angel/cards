@@ -23,7 +23,7 @@ const Rows: React.FC<{ flip?: boolean }> = ({ flip }) => {
     const tip = flip ? row : col;
     const toofar = row > 2 || col > 2 || tip < 0
 
-    if (toofar) {
+    if (toofar || room.locks == null) {
       return null;
     }
 
