@@ -1,3 +1,10 @@
-export function coords(x: number, y: number) {
-  return x.toString(16) + ':' + y.toString(16);
+export function rotateDoors(doors: string, rotation: number): string {
+  const allDoors = 'NESW';
+  return doors
+    .split('')
+    .map((door) => {
+      const index = (allDoors.indexOf(door) + rotation) % 4;
+      return allDoors[index];
+    })
+    .join('');
 }
