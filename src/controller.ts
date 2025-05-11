@@ -1,91 +1,72 @@
-import { Room, Resource } from './types';
-import { Player } from './player';
-import { initialDeck } from './deck';
+import Deck, { DECK } from './deck';
+import { Point } from './point';
+import { Way, Resource, IRoom, ArrWay } from './types';
+import { rotate } from './utils';
 
-export class GameController {
-  private player: Player;
-  private board: Record<string, [Room, number]> = {};
-  private locks: Record<string, (0 | 1 | 2)[]> = {};
-  private pool: Room[] = [...initialDeck];
-  private hand: Room[] = [];
+const DEADEND: IRoom = {
+  title: 'deadend',
+  rarity: 0,
+};
 
-  constructor() {
-    this.player = new Player();
+const ENTRANCE: IRoom = {
+  title: 'entrance',
+  ways: 13,
+  rarity: 0,
+};
+
+export default class Controller {
+  private position: Point = new Point(0, 0);
+  private sanity: number = 100;
+  private pockets: Resource[] = [];
+  private deck = new Deck<IRoom>(DECK);
+  private board: Record<string, [IRoom, Way]> = {
+    '0:0': [ENTRANCE, 0],
+  };
+  private locks: Record<string, number> = {};
+  private hand: (IRoom | null)[] = [];
+
+  constructor() {}
+
+  move(dir: Way) {
+    this.position = Point.delta(dir).plus(this.position);
+    this.sanity--;
   }
 
-  isDoorLocked(direction: number): boolean {
-    const [currentRoom, rotation] = this.board[this.player.where()];
-    const adjustedDoors = currentRoom.doors.map(
-      (door) => (door + rotation) % 4
-    );
-
-    if (!adjustedDoors.includes(direction)) {
-      throw new Error('Invalid direction');
-    }
-
-    const [x, y] = this.calculateNextPosition(direction);
-    const key = `${x}:${y}`;
-
-    return this.locks[key]?.includes(direction as 0 | 1 | 2) ?? false;
+  teleport(x: number, y: number) {
+    this.position = new Point(x, y);
   }
 
-  removeLock(direction: number) {
-    const [x, y] = this.calculateNextPosition(direction);
-    const key = `${x}:${y}`;
+  getWays(): ArrWay {
+    const coords = this.position.coords();
+    const [room, rot] = this.board[coords];
+    const adjusted = rotate(rot, room.ways);
 
-    if (!this.locks[key]?.includes(direction as 0 | 1 | 2)) {
-      throw new Error('No lock to remove');
-    }
-
-    this.player.lose('key');
-    this.locks[key] = this.locks[key].filter((d) => d !== direction);
+    return adjusted
+      .split('')
+      .map((value) => parseInt(value, 10))
+      .reduce<ArrWay>(
+        (acc, value) => {
+          acc[value] = true;
+          return acc;
+        },
+        [null, null, null, null]
+      );
   }
 
-  placeRoom(index: number, direction: number) {
-    if (index < 0 || index >= this.hand.length) {
-      throw new Error('Invalid room index');
-    }
-
-    const room = this.hand[index];
-    const [x, y] = this.calculateNextPosition(direction);
-    const key = `${x}:${y}`;
-
-    if (this.board[key]) {
-      throw new Error('Room already exists at this position');
-    }
-
-    const rotation = direction;
-    this.board[key] = [room, rotation];
-    this.hand.splice(index, 1);
-    this.player.teleport([x, y]);
-    this.player.changeSanity(-1);
+  draw() {
+    this.hand = this.deck.pull();
   }
 
-  drawRooms(count = 3): Room[] {
+  place(index: number, dir: Way) {
+    const chosen = this.hand[index];
     this.hand = [];
-    for (let i = 0; i < count; i++) {
-      if (this.pool.length === 0) break;
 
-      const randomIndex = Math.floor(Math.random() * this.pool.length);
-      const room = this.pool.splice(randomIndex, 1)[0];
-      this.hand.push(room);
+    if (chosen != null) {
+      this.deck.remove(chosen);
     }
-    return this.hand;
-  }
 
-  getAvailableDirections(): number[] {
-    const [currentRoom, rotation] = this.board[this.player.where()];
+    const coords = this.position.plus(Point.delta(dir)).coords();
 
-    return currentRoom.doors.map((door) => (door + rotation) % 4);
-  }
-
-  private calculateNextPosition(direction: number): [number, number] {
-    const [x, y] = this.player.position;
-    return [
-      [x, y - 1], // North
-      [x + 1, y], // East
-      [x, y + 1], // South
-      [x - 1, y], // West
-    ][direction] as [number, number];
+    this.board[coords] = chosen != null ? [chosen, dir] : [DEADEND, dir];
   }
 }
